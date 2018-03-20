@@ -7,22 +7,27 @@
 //
 
 #import "ViewController.h"
+#import "AYRateStarsView.h"
 
 @interface ViewController ()
+
+@property (nonatomic, strong) AYRateStarsView *rateStarsView;
 
 @end
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+ 
+    _rateStarsView = [[AYRateStarsView alloc] initWithFrame:CGRectMake(10, 200, [UIScreen mainScreen].bounds.size.width-20, 60)];
+    [self.view addSubview:_rateStarsView];
 }
 
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 

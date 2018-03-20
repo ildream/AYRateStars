@@ -15,7 +15,7 @@
 		C1D55AE52060CF5F00692788 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D55AE42060CF5F00692788 /* main.m */; };
 		C1D55AEF2060CF5F00692788 /* AYRateStarsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D55AEE2060CF5F00692788 /* AYRateStarsTests.m */; };
 		C1D55AFA2060CF5F00692788 /* AYRateStarsUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D55AF92060CF5F00692788 /* AYRateStarsUITests.m */; };
-		C1D55B0B2060CFD600692788 /* AYRateStars.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D55B0A2060CFD600692788 /* AYRateStars.m */; };
+		C1D55B0B2060CFD600692788 /* AYRateStarsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D55B0A2060CFD600692788 /* AYRateStarsView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,8 +52,8 @@
 		C1D55AF52060CF5F00692788 /* AYRateStarsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AYRateStarsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D55AF92060CF5F00692788 /* AYRateStarsUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AYRateStarsUITests.m; sourceTree = "<group>"; };
 		C1D55AFB2060CF5F00692788 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C1D55B092060CFD600692788 /* AYRateStars.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AYRateStars.h; sourceTree = "<group>"; };
-		C1D55B0A2060CFD600692788 /* AYRateStars.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AYRateStars.m; sourceTree = "<group>"; };
+		C1D55B092060CFD600692788 /* AYRateStarsView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AYRateStarsView.h; sourceTree = "<group>"; };
+		C1D55B0A2060CFD600692788 /* AYRateStarsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AYRateStarsView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,8 +139,8 @@
 		C1D55B072060CFA100692788 /* AYRateStars */ = {
 			isa = PBXGroup;
 			children = (
-				C1D55B092060CFD600692788 /* AYRateStars.h */,
-				C1D55B0A2060CFD600692788 /* AYRateStars.m */,
+				C1D55B092060CFD600692788 /* AYRateStarsView.h */,
+				C1D55B0A2060CFD600692788 /* AYRateStarsView.m */,
 			);
 			path = AYRateStars;
 			sourceTree = "<group>";
@@ -281,7 +281,7 @@
 				C1D55ADA2060CF5F00692788 /* ViewController.m in Sources */,
 				C1D55AE52060CF5F00692788 /* main.m in Sources */,
 				C1D55AD72060CF5F00692788 /* AppDelegate.m in Sources */,
-				C1D55B0B2060CFD600692788 /* AYRateStars.m in Sources */,
+				C1D55B0B2060CFD600692788 /* AYRateStarsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

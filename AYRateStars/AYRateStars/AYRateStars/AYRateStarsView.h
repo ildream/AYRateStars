@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AYRateStars : UIView
+@interface AYRateStarsView : UIView
 
 @end
