@@ -17,7 +17,7 @@
 @property (nonatomic, strong) NSMutableArray *starImgs;
 @property (nonatomic, assign) BOOL firstStarChangeGray;
 @property (nonatomic, assign) RateStarImageType imageType;
-@property (nonatomic, assign) NSInteger idxOfStarImgs;//当前星星的索引，-1表示五颗星都是灰色
+@property (nonatomic, assign) NSInteger idxOfStarImgs;//当前星星的索引
 
 @end
 
@@ -149,7 +149,6 @@
         
         if (minX > currentPointX && idx == 0) {
             self.firstStarChangeGray = YES;
-            self.idxOfStarImgs = -1;
             *stop = YES;
         }else{
             self.firstStarChangeGray = NO;
@@ -162,7 +161,6 @@
                 if (minX < currentPointX && currentPointX < (midX - _starWidth/4)) {
                     if (idx == 0) {
                         self.firstStarChangeGray = YES;
-                        self.idxOfStarImgs = -1;
                     }
                     else{
                         self.idxOfStarImgs = idx - 1;
