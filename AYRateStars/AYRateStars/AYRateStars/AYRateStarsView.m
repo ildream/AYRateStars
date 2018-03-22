@@ -56,18 +56,50 @@
     self.starHeight = kStarImgHeight;
 }
 
+-(void)setStarWidth:(CGFloat)starWidth
+{
+    _starWidth = starWidth;
+    [self setStarImgsSize];
+}
+
+- (void)setStarHeight:(CGFloat)starHeight
+{
+    _starHeight = starHeight;
+    [self setStarImgsSize];
+}
+
+- (void)setStarImgsSize
+{
+    [_starImgs enumerateObjectsUsingBlock:^(UIImageView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        CGRect f = obj.frame;
+        f.size.height = _starHeight;
+        f.size.width = _starWidth;
+        f.origin.x = [self getImgGapWithScreenEdge]+(idx*(_starWidth+kStarImgsGap));
+        f.origin.y = [self getOriginY];
+        obj.frame = f;
+    }];
+}
+
+- (CGFloat)getImgGapWithScreenEdge
+{
+    return (self.frame.size.width - 5*_starWidth - 4*kStarImgsGap)/2.0;
+}
+
+- (CGFloat)getOriginY
+{
+    return (self.frame.size.height - _starHeight)/2.0;
+}
+
 //MARK:初始化UIIamgeView相关数据
 - (void)initDataWithImageView:(CGRect)frame
 {
     if (!_starImgs) {
         _starImgs = @[].mutableCopy;
     }
-    __block CGFloat imgGapWithScreenEdge = (frame.size.width - 5*_starWidth - 4*kStarImgsGap)/2.0;
-    __block CGFloat originY = (frame.size.height - _starHeight)/2.0;
     
     for (int idx = 0; idx<5; idx++)
     {
-        UIImageView *obj = [[UIImageView alloc] initWithFrame:CGRectMake(imgGapWithScreenEdge+(idx*(_starWidth+kStarImgsGap)), originY, _starWidth, _starHeight)];
+        UIImageView *obj = [[UIImageView alloc] initWithFrame:CGRectMake([self getImgGapWithScreenEdge]+(idx*(_starWidth+kStarImgsGap)), [self getOriginY], _starWidth, _starHeight)];
         obj.contentMode = UIViewContentModeScaleAspectFit;
         obj.image = [UIImage imageNamed:@"rate_graystar"];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapStarImgsHandler:)];
