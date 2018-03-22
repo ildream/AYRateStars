@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum : NSUInteger {
+    RateStarImageType_Gray,
+    RateStarImageType_Half,
+    RateStarImageType_Full,
+    RateStarImageType_None
+} RateStarImageType;
+
 @interface AYRateStarsView : UIView
 
 //是否支持半星评级
@@ -21,5 +28,11 @@
 
 //是否支持点击选中星星   default YES
 @property (nonatomic, assign) BOOL isSuppportTapStar;
+
+//星星size的 width
+@property (nonatomic, assign) CGFloat starWidth;
+
+//星星size的 height
+@property (nonatomic, assign) CGFloat starHeight;
 
 @end
