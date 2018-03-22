@@ -54,7 +54,6 @@
     self.isSupportHalfStar = YES;
     self.starWidth = kStarImgWidth;
     self.starHeight = kStarImgHeight;
-    
 }
 
 //MARK:初始化UIIamgeView相关数据
@@ -78,6 +77,9 @@
         [self addSubview:obj];
         [_starImgs addObject:obj];
     }
+    
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panStarImgsHandler:)];
+    [self addGestureRecognizer:panGesture];
 }
 
 //MARK: 处理点击StarImg事件
@@ -94,9 +96,10 @@
     }
 }
 
-- (void)swipeStarImgsHandler:(UITapGestureRecognizer *)sender
+- (void)panStarImgsHandler:(UIPanGestureRecognizer *)sender
 {
-    
+    CGPoint p = [sender locationInView:sender.view];
+    [self changeStarImgStatus:[self getIndexOfTouchStarImg:p isTapGesture:YES] isTapGesture:YES];
 }
 
 - (NSInteger)getIndexOfTouchStarImg:(CGPoint)currentPoint isTapGesture:(BOOL)isTapGesture
@@ -147,7 +150,7 @@
                 *stop = YES;
             }
         }
-        else if (maxX >= currentPointX && midX > currentPointX)
+        else if (maxX > currentPointX && currentPointX > midX)
         {
             self.idxOfStarImgs = idx;
             self.imageType = RateStarImageType_Full;
