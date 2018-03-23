@@ -12,6 +12,10 @@
 #define kStarImgWidth  36
 #define kStarImgsGap 14
 
+#define DefaultHalfStarImgName    @"rate_halfstar"
+#define DefaultFullStarImgName    @"rate_fullstar"
+#define DefaultGrayStarImgName    @"rate_graystar"
+
 @interface AYRateStarsView()
 
 @property (nonatomic, strong) NSMutableArray *starImgs;
@@ -23,13 +27,14 @@
 
 @implementation AYRateStarsView
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame isInitData:(BOOL)isInitData
 {
     if (self = [super initWithFrame:frame])
     {
         self.backgroundColor = [UIColor colorWithRed:24/255.0 green:242/255.0 blue:142/255.0 alpha:1];
-        [self initData];
-        [self initDataWithImageView:frame];
+        if (isInitData) {
+            [self initData];
+        }
     }
     return self;
 }
@@ -52,8 +57,14 @@
 - (void)initData
 {
     self.isSupportHalfStar = YES;
-    self.starWidth = kStarImgWidth;
+    self.starWidth = self.starWidth!=0?self.starWidth:kStarImgWidth;
+    self.starHeight = self.starHeight!=0?self.starHeight:kStarImgHeight;
     self.starHeight = kStarImgHeight;
+    self.halfStarImgName = self.halfStarImgName.length?self.halfStarImgName:DefaultHalfStarImgName;
+    self.grayStarImgName = self.grayStarImgName.length?self.grayStarImgName:DefaultGrayStarImgName;
+    self.fullStarImgName = self.fullStarImgName.length?self.fullStarImgName:DefaultFullStarImgName;
+    
+    [self initDataWithImageView:self.frame];
 }
 
 -(void)setStarWidth:(CGFloat)starWidth
@@ -105,7 +116,7 @@
     {
         UIImageView *obj = [[UIImageView alloc] initWithFrame:CGRectMake([self getImgGapWithScreenEdge]+(idx*(_starWidth+kStarImgsGap)), [self getOriginY], _starWidth, _starHeight)];
         obj.contentMode = UIViewContentModeScaleAspectFit;
-        obj.image = [UIImage imageNamed:@"rate_graystar"];
+        obj.image = [UIImage imageNamed:_grayStarImgName];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapStarImgsHandler:)];
         obj.userInteractionEnabled = YES;
         obj.tag = idx;
@@ -200,29 +211,27 @@
 
 - (void)changeStarImgStatus:(NSInteger)index isTapGesture:(BOOL)isTapGesture
 {
-    if (index != -1) {// -1 表示所有星星都为灰色
-        for (NSInteger i = 0; i <_starImgs.count; i++)
-        {
-            UIImageView *img = _starImgs[i];
-            if (i<index){
-                img.image = [UIImage imageNamed:@"rate_fullstar"];
+    for (NSInteger i = 0; i <_starImgs.count; i++)
+    {
+        UIImageView *img = _starImgs[i];
+        if (i<index){
+            img.image = [UIImage imageNamed:_fullStarImgName];
+        }
+        else if (i==index){
+            NSString *imageName = nil;
+            if (self.imageType == RateStarImageType_Full) {
+                imageName = _fullStarImgName;
             }
-            else if (i==index){
-                NSString *imageName = nil;
-                if (self.imageType == RateStarImageType_Full) {
-                    imageName = @"rate_fullstar";
-                }
-                else if (self.imageType == RateStarImageType_Half){
-                    imageName = @"rate_halfstar";
-                }
-                else{
-                    imageName = @"rate_graystar";
-                }
-                img.image = [UIImage imageNamed:imageName];
+            else if (self.imageType == RateStarImageType_Half){
+                imageName = _halfStarImgName;
             }
             else{
-                 img.image = [UIImage imageNamed:@"rate_graystar"];
+                imageName = _grayStarImgName;
             }
+            img.image = [UIImage imageNamed:imageName];
+        }
+        else{
+            img.image = [UIImage imageNamed:_grayStarImgName];
         }
     }
 }
