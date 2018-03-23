@@ -59,13 +59,17 @@
 -(void)setStarWidth:(CGFloat)starWidth
 {
     _starWidth = starWidth;
-    [self setStarImgsSize];
+    if (_starWidth != kStarImgWidth) {
+        [self setStarImgsSize];
+    }
 }
 
 - (void)setStarHeight:(CGFloat)starHeight
 {
     _starHeight = starHeight;
-    [self setStarImgsSize];
+    if (_starHeight != kStarImgHeight) {
+        [self setStarImgsSize];
+    }
 }
 
 - (void)setStarImgsSize
@@ -123,7 +127,7 @@
     CGFloat minX = CGRectGetMinX(img.frame);
     
     if (sender.state == UIGestureRecognizerStateEnded) {
-        p.x += minX + p.x;
+        p.x += minX;
         [self changeStarImgStatus:[self getIndexOfTouchStarImg:p isTapGesture:YES] isTapGesture:YES];
     }
 }
@@ -131,7 +135,8 @@
 - (void)panStarImgsHandler:(UIPanGestureRecognizer *)sender
 {
     CGPoint p = [sender locationInView:sender.view];
-    [self changeStarImgStatus:[self getIndexOfTouchStarImg:p isTapGesture:YES] isTapGesture:YES];
+    NSInteger idx = [self getIndexOfTouchStarImg:p  isTapGesture:NO];
+    [self changeStarImgStatus:idx isTapGesture:NO];
 }
 
 - (NSInteger)getIndexOfTouchStarImg:(CGPoint)currentPoint isTapGesture:(BOOL)isTapGesture
@@ -149,6 +154,7 @@
         
         if (minX > currentPointX && idx == 0) {
             self.firstStarChangeGray = YES;
+            self.imageType = RateStarImageType_Gray;
             *stop = YES;
         }else{
             self.firstStarChangeGray = NO;
@@ -161,6 +167,7 @@
                 if (minX < currentPointX && currentPointX < (midX - _starWidth/4)) {
                     if (idx == 0) {
                         self.firstStarChangeGray = YES;
+                        self.imageType = RateStarImageType_Gray;
                     }
                     else{
                         self.idxOfStarImgs = idx - 1;
@@ -193,28 +200,29 @@
 
 - (void)changeStarImgStatus:(NSInteger)index isTapGesture:(BOOL)isTapGesture
 {
-    for (NSInteger i = 0; i <_starImgs.count; i++)
-    {
-        UIImageView *img = _starImgs[i];
-        //只有当前的触碰到的星星会有半星的情况。
-        if (i == index) {
-            NSString *imageName = nil;
-            if (self.imageType == RateStarImageType_Full) {
-                imageName = @"rate_fullstar";
+    if (index != -1) {// -1 表示所有星星都为灰色
+        for (NSInteger i = 0; i <_starImgs.count; i++)
+        {
+            UIImageView *img = _starImgs[i];
+            if (i<index){
+                img.image = [UIImage imageNamed:@"rate_fullstar"];
             }
-            else if (self.imageType == RateStarImageType_Half){
-                imageName = @"rate_halfstar";
+            else if (i==index){
+                NSString *imageName = nil;
+                if (self.imageType == RateStarImageType_Full) {
+                    imageName = @"rate_fullstar";
+                }
+                else if (self.imageType == RateStarImageType_Half){
+                    imageName = @"rate_halfstar";
+                }
+                else{
+                    imageName = @"rate_graystar";
+                }
+                img.image = [UIImage imageNamed:imageName];
             }
-            img.image = [UIImage imageNamed:imageName];
-        }else{
-            img.image = [UIImage imageNamed:@"rate_fullstar"];
-        }
-    }
-    
-    if (index+1<_starImgs.count) {//没有点击到五星的情况
-        for (NSInteger j =  self.firstStarChangeGray?0:(index+1); j < _starImgs.count ; j++) {
-            UIImageView *img = _starImgs[j];
-            img.image = [UIImage imageNamed:@"rate_graystar"];
+            else{
+                 img.image = [UIImage imageNamed:@"rate_graystar"];
+            }
         }
     }
 }
