@@ -21,9 +21,10 @@
 {
     [super viewDidLoad];
  
-    _rateStarsView = [[AYRateStarsView alloc] initWithFrame:CGRectMake(10, 200, [UIScreen mainScreen].bounds.size.width-20, 60)];
-    _rateStarsView.starWidth = 36;
-    _rateStarsView.starHeight = 36;
+    _rateStarsView = [[AYRateStarsView alloc] initWithFrame:CGRectMake(10, 200, [UIScreen mainScreen].bounds.size.width-20, 60) isInitData:NO];
+    _rateStarsView.starWidth = 30;
+    _rateStarsView.starHeight = 30;
+    [_rateStarsView initData];
     [self.view addSubview:_rateStarsView];
 }
 
