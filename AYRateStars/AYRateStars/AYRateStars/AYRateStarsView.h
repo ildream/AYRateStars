@@ -55,6 +55,7 @@ typedef enum : NSUInteger {
 //星星size的 height
 @property (nonatomic, assign) CGFloat starHeight;
 
+//星星之间的间距
 @property (nonatomic, assign) CGFloat starImgGap;
 
 //星星的x 坐标，默认的starOriginx = (self.frame.size.width - 5*_starWidth - 4*kStarImgsGap)/2.0
