@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 typedef enum : NSUInteger {
     RateStarImageType_Gray,
@@ -15,26 +16,29 @@ typedef enum : NSUInteger {
     RateStarImageType_None
 } RateStarImageType;
 
-@interface AYRateStarsView : UIView
+@protocol RateStarDelegate<NSObject>
 
+- (void)rateStarEventHandler:(NSInteger)starNumber withImageType:(RateStarImageType)imageType;
+
+@end
+
+
+@interface AYRateStarsView : UIView
 
 /**
  初始化AYRateStarsView的方法
 
  @param frame AYRateStarsView 的frame
- @param isInitData YES 表示使用默认初始化参数  设置为NO,需要手动设置[self initData]方法，初始化一些数据
+ @param isSupportHalfStar YES 表示支持半星，NO表示不支持半星
  @return self
  */
-- (id)initWithFrame:(CGRect)frame isInitData:(BOOL)isInitData;
+- (id)initWithFrame:(CGRect)frame isSupportHalfStar:(BOOL)isSupportHalfStar;
 
 
 /**
  初始化一些必要的数据
  */
 - (void)initData;
-
-//是否支持半星评级
-@property (nonatomic, assign) BOOL isSupportHalfStar;
 
 //是否支持第一颗星（或半颗星）选中后，无法消去选中状态
 @property (nonatomic, assign) BOOL isSupportKeepFirstStar;
@@ -51,11 +55,18 @@ typedef enum : NSUInteger {
 //星星size的 height
 @property (nonatomic, assign) CGFloat starHeight;
 
+@property (nonatomic, assign) CGFloat starImgGap;
+
+//星星的x 坐标，默认的starOriginx = (self.frame.size.width - 5*_starWidth - 4*kStarImgsGap)/2.0
+@property (nonatomic, assign) CGFloat starOriginX;
+
 /* 灰色星星、半星、亮星 自定义图片名称 */
 @property (nonatomic, strong) NSString * halfStarImgName;
 
 @property (nonatomic, strong) NSString * fullStarImgName;
 
 @property (nonatomic, strong) NSString * grayStarImgName;
+
+@property (nonatomic, weak) id <RateStarDelegate>delegate;
 
 @end

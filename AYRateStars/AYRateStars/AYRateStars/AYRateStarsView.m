@@ -10,7 +10,7 @@
 
 #define kStarImgHeight 36
 #define kStarImgWidth  36
-#define kStarImgsGap 14
+#define kStarImgGap 14
 
 #define DefaultHalfStarImgName    @"rate_halfstar"
 #define DefaultFullStarImgName    @"rate_fullstar"
@@ -19,22 +19,20 @@
 @interface AYRateStarsView()
 
 @property (nonatomic, strong) NSMutableArray *starImgs;
-@property (nonatomic, assign) BOOL firstStarChangeGray;
 @property (nonatomic, assign) RateStarImageType imageType;
 @property (nonatomic, assign) NSInteger idxOfStarImgs;//当前星星的索引
+@property (nonatomic, assign) BOOL isSupportHalfStar;
 
 @end
 
 @implementation AYRateStarsView
 
-- (id)initWithFrame:(CGRect)frame isInitData:(BOOL)isInitData
+- (id)initWithFrame:(CGRect)frame isSupportHalfStar:(BOOL)isSupportHalfStar
 {
     if (self = [super initWithFrame:frame])
     {
         self.backgroundColor = [UIColor colorWithRed:24/255.0 green:242/255.0 blue:142/255.0 alpha:1];
-        if (isInitData) {
-            [self initData];
-        }
+        _isSupportHalfStar = isSupportHalfStar;
     }
     return self;
 }
@@ -45,20 +43,11 @@
     
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    if (self=[super initWithCoder:aDecoder])
-    {
-        
-    }
-    return self;
-}
-
 - (void)initData
 {
-    self.isSupportHalfStar = YES;
     self.starWidth = self.starWidth!=0?self.starWidth:kStarImgWidth;
     self.starHeight = self.starHeight!=0?self.starHeight:kStarImgHeight;
+    self.starImgGap = self.starImgGap!=0?self.starImgGap:kStarImgGap;
     self.starHeight = kStarImgHeight;
     self.halfStarImgName = self.halfStarImgName.length?self.halfStarImgName:DefaultHalfStarImgName;
     self.grayStarImgName = self.grayStarImgName.length?self.grayStarImgName:DefaultGrayStarImgName;
@@ -89,7 +78,7 @@
         CGRect f = obj.frame;
         f.size.height = _starHeight;
         f.size.width = _starWidth;
-        f.origin.x = [self getImgGapWithScreenEdge]+(idx*(_starWidth+kStarImgsGap));
+        f.origin.x = [self getImgGapWithScreenEdge]+(idx*(_starWidth+_starImgGap));
         f.origin.y = [self getOriginY];
         obj.frame = f;
     }];
@@ -97,7 +86,10 @@
 
 - (CGFloat)getImgGapWithScreenEdge
 {
-    return (self.frame.size.width - 5*_starWidth - 4*kStarImgsGap)/2.0;
+    if (self.starOriginX) {
+        return self.starOriginX;
+    }
+    return (self.frame.size.width - 5*_starWidth - 4*_starImgGap)/2.0;
 }
 
 - (CGFloat)getOriginY
@@ -114,7 +106,7 @@
     
     for (int idx = 0; idx<5; idx++)
     {
-        UIImageView *obj = [[UIImageView alloc] initWithFrame:CGRectMake([self getImgGapWithScreenEdge]+(idx*(_starWidth+kStarImgsGap)), [self getOriginY], _starWidth, _starHeight)];
+        UIImageView *obj = [[UIImageView alloc] initWithFrame:CGRectMake([self getImgGapWithScreenEdge]+(idx*(_starWidth+_starImgGap)), [self getOriginY], _starWidth, _starHeight)];
         obj.contentMode = UIViewContentModeScaleAspectFit;
         obj.image = [UIImage imageNamed:_grayStarImgName];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapStarImgsHandler:)];
@@ -163,46 +155,67 @@
         midX = CGRectGetMidX(obj.frame);
         maxX = CGRectGetMaxX(obj.frame);
         
-        if (minX > currentPointX && idx == 0) {
-            self.firstStarChangeGray = YES;
-            self.imageType = RateStarImageType_Gray;
-            *stop = YES;
-        }else{
-            self.firstStarChangeGray = NO;
-        }
-        
-        if (minX < currentPointX && midX >= currentPointX)
-        {
-            if (isTapGesture){
-                //  currentPointX 触摸在0~1/4星星的区域时，使这颗星完全变灰。
-                if (minX < currentPointX && currentPointX < (midX - _starWidth/4)) {
-                    if (idx == 0) {
-                        self.firstStarChangeGray = YES;
-                        self.imageType = RateStarImageType_Gray;
+        if (_isSupportHalfStar) {
+            if (minX > currentPointX && idx == 0) {
+                self.imageType = RateStarImageType_Gray;
+                self.idxOfStarImgs = idx;
+                *stop = YES;
+            }
+            
+            if (minX < currentPointX && midX >= currentPointX)
+            {
+                if (isTapGesture){
+                    //  currentPointX 触摸在0~1/4星星的区域时，使这颗星完全变灰。
+                    if (minX < currentPointX && currentPointX < (midX - _starWidth/4)) {
+                        if (idx == 0) {
+                            self.imageType = RateStarImageType_Gray;
+                        }
+                        else{
+                            self.idxOfStarImgs = idx - 1;
+                            self.imageType = RateStarImageType_Full;
+                        }
+                        *stop = YES;
                     }
-                    else{
-                        self.idxOfStarImgs = idx - 1;
-                        self.imageType = RateStarImageType_Full;
+                    else{ //1/4 ~ 1/2 之间
+                        self.idxOfStarImgs = idx;
+                        self.imageType = RateStarImageType_Half;
+                        *stop = YES;
                     }
-                    *stop = YES;
                 }
-                else{ //1/4 ~ 1/2 之间
+                else{
                     self.idxOfStarImgs = idx;
                     self.imageType = RateStarImageType_Half;
                     *stop = YES;
                 }
             }
-            else{
+            else if (maxX > currentPointX && currentPointX > midX)
+            {
                 self.idxOfStarImgs = idx;
-                self.imageType = RateStarImageType_Half;
+                self.imageType = RateStarImageType_Full;
                 *stop = YES;
             }
         }
-        else if (maxX > currentPointX && currentPointX > midX)
-        {
-            self.idxOfStarImgs = idx;
-            self.imageType = RateStarImageType_Full;
-            *stop = YES;
+        else{
+            
+            if (minX > currentPointX && idx == 0 && !self.isSupportKeepFirstStar) {
+                self.imageType = RateStarImageType_Gray;
+                self.idxOfStarImgs = idx;
+                *stop = YES;
+            }
+            
+            if (!isTapGesture && minX < currentPointX && maxX > currentPointX && idx ==0) {
+                if (self.isSupportKeepFirstStar) {
+                    self.imageType = RateStarImageType_Full;
+                    self.idxOfStarImgs = idx;
+                    *stop = YES;
+                }
+            }
+            
+            if (minX+2 <= currentPointX && maxX > currentPointX) {
+                self.idxOfStarImgs = idx;
+                self.imageType = RateStarImageType_Full;
+                *stop = YES;
+            }
         }
     }];
     
@@ -233,6 +246,11 @@
         else{
             img.image = [UIImage imageNamed:_grayStarImgName];
         }
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(rateStarEventHandler:withImageType:)])
+    {
+        [self.delegate rateStarEventHandler:index withImageType:self.imageType];
     }
 }
 
