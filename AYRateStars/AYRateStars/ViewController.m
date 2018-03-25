@@ -37,6 +37,8 @@
 //    _rateStarsView.starImgGap = 10;
 //    _rateStarsView.starOriginX = 30;
 //    _rateStarsView.isSupportKeepFirstStar = YES;
+//    _rateStarsView.isSupportSwipeStar = NO;
+//    _rateStarsView.isSuppportTapStar = NO;
     [_rateStarsView initData];
 }
 

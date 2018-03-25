@@ -33,6 +33,8 @@
     {
         self.backgroundColor = [UIColor colorWithRed:24/255.0 green:242/255.0 blue:142/255.0 alpha:1];
         _isSupportHalfStar = isSupportHalfStar;
+        _isSuppportTapStar = YES;
+        _isSupportSwipeStar = YES;
     }
     return self;
 }
@@ -109,16 +111,20 @@
         UIImageView *obj = [[UIImageView alloc] initWithFrame:CGRectMake([self getImgGapWithScreenEdge]+(idx*(_starWidth+_starImgGap)), [self getOriginY], _starWidth, _starHeight)];
         obj.contentMode = UIViewContentModeScaleAspectFit;
         obj.image = [UIImage imageNamed:_grayStarImgName];
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapStarImgsHandler:)];
         obj.userInteractionEnabled = YES;
         obj.tag = idx;
-        [obj addGestureRecognizer:tap];
+        if (_isSuppportTapStar) {
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapStarImgsHandler:)];
+            [obj addGestureRecognizer:tap];
+        }
         [self addSubview:obj];
         [_starImgs addObject:obj];
     }
     
-    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panStarImgsHandler:)];
-    [self addGestureRecognizer:panGesture];
+    if (_isSupportSwipeStar) {
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panStarImgsHandler:)];
+        [self addGestureRecognizer:panGesture];
+    }
 }
 
 //MARK: 处理点击StarImg事件
